@@ -1,0 +1,96 @@
+﻿<Window x:Class="FocusTimerUIPrototype.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:FocusTimerUIPrototype"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="600" Width="500">
+    <Grid Margin="40">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Row="0"
+               Text="Focus Session"
+               FontSize="28"
+               FontWeight="Bold"
+               HorizontalAlignment="Center"/>
+        
+        <StackPanel x:Name="SetupPanel" 
+                    Grid.Row="1"
+                    Margin="0,30,0,0">
+
+            <TextBlock Text="Duration"
+               FontWeight="SemiBold"/>
+
+            <ComboBox x:Name="DurationComboBox"
+                        Height="35"
+                        Margin="0,5,0,20">
+                <ComboBoxItem Content="25 minutes"/>
+                <ComboBoxItem Content="30 minutes"/>
+                <ComboBoxItem Content="45 minutes"/>
+                <ComboBoxItem Content="60 minutes"/>
+            </ComboBox>
+
+            <TextBlock Text="Category"
+           FontWeight="SemiBold"/>
+
+            <ComboBox x:Name="CategoryComboBox"
+                        Height="35"
+                        Margin="0,5,0,20">
+                <ComboBoxItem Content=".NET"/>
+                <ComboBoxItem Content="Cloud Computing"/>
+                <ComboBoxItem Content="Image Processing"/>
+            </ComboBox>
+
+            <TextBlock Text="Task"
+           FontWeight="SemiBold"/>
+
+            <ComboBox x:Name="TaskComboBox"
+                        Height="35"
+                        Margin="0,5,0,30">
+                <ComboBoxItem Content="Assignment 2"/>
+                <ComboBoxItem Content="Week 9 Lab"/>
+                <ComboBoxItem Content="Study for Quiz"/>
+            </ComboBox>
+
+            <Button Content="Start Session"
+                    Width="150"
+                    Height="40"
+                    HorizontalAlignment="Center"
+                    Click="StartSessionButton_Click"/>
+            
+        </StackPanel>
+
+        <StackPanel x:Name="TimerPanel"
+            Grid.Row="1"
+            Margin="0,60,0,0"
+            Visibility="Collapsed">
+
+            <TextBlock x:Name="SessionCategoryText"
+               FontSize="18"
+               HorizontalAlignment="Center"/>
+
+            <TextBlock x:Name="SessionTaskText"
+               FontSize="16"
+               HorizontalAlignment="Center"
+               Margin="0,5,0,30"/>
+
+            <TextBlock x:Name="TimerText"
+               Text="00:00"
+               FontSize="64"
+               FontWeight="Bold"
+               HorizontalAlignment="Center"/>
+            <Button Content="End Session"
+               Width="150"
+               Height="40"
+               HorizontalAlignment="Center"
+               Margin="0,30,0,0"
+               Click="EndSessionButton_Click"/>
+
+        </StackPanel>
+
+    </Grid>
+</Window>
