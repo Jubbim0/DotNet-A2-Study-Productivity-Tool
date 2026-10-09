@@ -10,6 +10,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using StudyProductivityApp.Models;
 
 namespace StudyProductivityApp.Views
 {
@@ -18,9 +19,27 @@ namespace StudyProductivityApp.Views
     /// </summary>
     public partial class CategoriesPage : Page
     {
+        private List<Category> categories = new List<Category>();
+
         public CategoriesPage()
         {
             InitializeComponent();
         }
-    }
+
+    private void AddCategoryButton_Click(object sender, RoutedEventArgs e)
+        {
+            string categoryName = CategoryNameTextBox.Text.Trim();
+
+            Category newCategory = new Category
+            {
+                Name = categoryName
+            };
+
+            categories.Add(newCategory);
+
+            CategoriesListBox.Items.Add(newCategory.Name);
+
+            CategoryNameTextBox.Clear(); 
+        }
+    }   
 }
