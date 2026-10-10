@@ -19,7 +19,7 @@ namespace StudyProductivityApp
 
         private void Tasks_Click(object sender, RoutedEventArgs e)
         {
-            MainFrame.Navigate(new TasksListPage());
+            MainFrame.Navigate(new TasksPage());
         }
 
         private void Focus_Click(object sender, RoutedEventArgs e)
