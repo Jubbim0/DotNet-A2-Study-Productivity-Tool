@@ -1,18 +1,101 @@
-﻿<Page x:Class="StudyProductivityApp.Views.FocusTimerPage"
+﻿<Page x:Class="StudyProductivityApp.Views.FocusPage"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-      xmlns:local="clr-namespace:StudyProductivityApp.Views"
-      mc:Ignorable="d" 
-      d:DesignHeight="450" d:DesignWidth="800"
-      Title="FocusTimerPage">
+      Title="Focus Timer">
 
-    <Grid>
-        <TextBlock Text="Task List"
-           FontSize="28"
-           FontWeight="Bold"
-           Margin="30"/>
-        
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Heading -->
+        <TextBlock Grid.Row="0"
+                   Text="Focus Timer"
+                   FontSize="26"
+                   FontWeight="Bold"
+                   Margin="0,0,0,20"/>
+
+        <!-- Timer controls -->
+        <StackPanel Grid.Row="1" HorizontalAlignment="Center">
+
+            <TextBlock Text="Session Duration (minutes)"
+                       HorizontalAlignment="Center"/>
+
+            <TextBox x:Name="DurationInput"
+                     Width="100"
+                     Text="25"
+                     HorizontalContentAlignment="Center"
+                     Margin="0,5,0,15"/>
+
+            <TextBlock x:Name="TimerDisplay"
+                       Text="25:00"
+                       FontSize="60"
+                       FontWeight="Bold"
+                       HorizontalAlignment="Center"
+                       Margin="0,0,0,15"/>
+
+            <TextBlock Text="Category (optional)"
+                       HorizontalAlignment="Center"/>
+
+            <ComboBox x:Name="CategoryInput"
+                      Width="180"
+                      DisplayMemberPath="Name"
+                      SelectedValuePath="Id"
+                      Margin="0,5,0,15"/>
+
+            <WrapPanel HorizontalAlignment="Center"
+                       Margin="0,0,0,20">
+
+                <Button x:Name="StartButton"
+                        Content="Start"
+                        Width="90"
+                        Margin="5"
+                        Click="Start_Click"/>
+
+                <Button x:Name="PauseButton"
+                        Content="Pause"
+                        Width="90"
+                        Margin="5"
+                        Click="Pause_Click"/>
+
+                <Button Content="Reset"
+                        Width="90"
+                        Margin="5"
+                        Click="Reset_Click"/>
+
+            </WrapPanel>
+        </StackPanel>
+
+        <!-- Session history heading -->
+        <TextBlock Grid.Row="2"
+                   Text="Study History"
+                   FontSize="20"
+                   FontWeight="Bold"
+                   Margin="0,10,0,10"/>
+
+        <!-- Completed sessions -->
+        <DataGrid x:Name="HistoryGrid"
+                  Grid.Row="3"
+                  AutoGenerateColumns="False"
+                  IsReadOnly="True">
+
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Completed At"
+                                    Binding="{Binding CompletedAt, StringFormat=dd/MM/yyyy HH:mm}"
+                                    Width="*"/>
+
+                <DataGridTextColumn Header="Duration (min)"
+                                    Binding="{Binding DurationMinutes}"
+                                    Width="130"/>
+
+                <DataGridTextColumn Header="Category"
+                                    Binding="{Binding Category.Name}"
+                                    Width="150"/>
+            </DataGrid.Columns>
+
+        </DataGrid>
     </Grid>
 </Page>

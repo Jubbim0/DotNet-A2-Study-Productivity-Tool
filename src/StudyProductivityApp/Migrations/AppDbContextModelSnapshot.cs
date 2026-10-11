@@ -37,6 +37,28 @@ namespace StudyProductivityApp.Migrations
                     b.ToTable("Categories");
                 });
 
+            modelBuilder.Entity("StudyProductivityApp.Models.StudySession", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("CategoryId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("CompletedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("DurationMinutes")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CategoryId");
+
+                    b.ToTable("StudySessions");
+                });
+
             modelBuilder.Entity("StudyProductivityApp.Models.StudyTask", b =>
                 {
                     b.Property<int>("Id")
@@ -69,6 +91,16 @@ namespace StudyProductivityApp.Migrations
                     b.HasIndex("CategoryId");
 
                     b.ToTable("Tasks");
+                });
+
+            modelBuilder.Entity("StudyProductivityApp.Models.StudySession", b =>
+                {
+                    b.HasOne("StudyProductivityApp.Models.Category", "Category")
+                        .WithMany()
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("Category");
                 });
 
             modelBuilder.Entity("StudyProductivityApp.Models.StudyTask", b =>

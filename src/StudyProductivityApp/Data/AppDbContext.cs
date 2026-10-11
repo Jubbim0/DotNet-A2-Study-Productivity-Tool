@@ -10,6 +10,8 @@ namespace StudyProductivityApp.Data
 
         public DbSet<StudyTask> Tasks { get; set; }
 
+        public DbSet<StudySession> StudySessions { get; set; }
+
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
             string folder = Path.Combine(
@@ -40,6 +42,12 @@ namespace StudyProductivityApp.Data
                 .HasOne(task => task.Category)
                 .WithMany(category => category.Tasks)
                 .HasForeignKey(task => task.CategoryId)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            modelBuilder.Entity<StudySession>()
+                .HasOne(session => session.Category)
+                .WithMany()
+                .HasForeignKey(session => session.CategoryId)
                 .OnDelete(DeleteBehavior.SetNull);
         }
     }
