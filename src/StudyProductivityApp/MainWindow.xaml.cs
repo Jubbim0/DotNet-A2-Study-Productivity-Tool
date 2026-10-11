@@ -24,7 +24,7 @@ namespace StudyProductivityApp
 
         private void Focus_Click(object sender, RoutedEventArgs e)
         {
-            MainFrame.Navigate(new FocusTimerPage());
+            MainFrame.Navigate(new FocusPage());
         }
 
         private void Calendar_Click(object sender, RoutedEventArgs e)
