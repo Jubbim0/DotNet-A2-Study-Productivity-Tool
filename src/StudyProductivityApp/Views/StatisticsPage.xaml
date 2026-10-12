@@ -1,14 +1,94 @@
 ﻿<Page x:Class="StudyProductivityApp.Views.StatisticsPage"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-      xmlns:local="clr-namespace:StudyProductivityApp.Views"
-      mc:Ignorable="d" 
-      d:DesignHeight="450" d:DesignWidth="800"
-      Title="StatisticsPage">
+      xmlns:charts="clr-namespace:LiveChartsCore.SkiaSharpView.WPF;assembly=LiveChartsCore.SkiaSharpView.WPF"
+      Title="Statistics">
 
-    <Grid>
-        
-    </Grid>
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="20">
+
+            <!-- Page title -->
+            <TextBlock Text="Statistics"
+                       FontSize="26"
+                       FontWeight="Bold"
+                       Margin="0,0,0,20"/>
+
+            <!-- Statistics cards -->
+            <UniformGrid Columns="4" Margin="0,0,0,25">
+
+                <Border BorderBrush="LightGray" BorderThickness="1" Padding="15" Margin="5">
+                    <StackPanel>
+                        <TextBlock Text="Total Study Time" FontWeight="Bold"/>
+                        <TextBlock x:Name="TotalStudyTimeText"
+                                   Text="0h 0m"
+                                   FontSize="24"
+                                   Margin="0,10,0,0"/>
+                    </StackPanel>
+                </Border>
+
+                <Border BorderBrush="LightGray" BorderThickness="1" Padding="15" Margin="5">
+                    <StackPanel>
+                        <TextBlock Text="Completed Sessions" FontWeight="Bold"/>
+                        <TextBlock x:Name="CompletedSessionsText"
+                                   Text="0"
+                                   FontSize="24"
+                                   Margin="0,10,0,0"/>
+                    </StackPanel>
+                </Border>
+
+                <Border BorderBrush="LightGray" BorderThickness="1" Padding="15" Margin="5">
+                    <StackPanel>
+                        <TextBlock Text="Average Duration" FontWeight="Bold"/>
+                        <TextBlock x:Name="AverageDurationText"
+                                   Text="0 min"
+                                   FontSize="24"
+                                   Margin="0,10,0,0"/>
+                    </StackPanel>
+                </Border>
+
+                <Border BorderBrush="LightGray" BorderThickness="1" Padding="15" Margin="5">
+                    <StackPanel>
+                        <TextBlock Text="Task Completion" FontWeight="Bold"/>
+                        <TextBlock x:Name="TaskCompletionText"
+                                   Text="0%"
+                                   FontSize="24"
+                                   Margin="0,10,0,0"/>
+                    </StackPanel>
+                </Border>
+
+            </UniformGrid>
+
+            <!-- Study time by category -->
+            <TextBlock Text="Study Time by Category"
+                       FontSize="20"
+                       FontWeight="Bold"
+                       Margin="0,0,0,10"/>
+
+            <Border BorderBrush="LightGray"
+                    BorderThickness="1"
+                    Padding="15"
+                    Margin="0,0,0,25">
+
+                <charts:CartesianChart x:Name="CategoryChart"
+                                       Height="300"/>
+
+            </Border>
+
+            <!-- Daily study activity -->
+            <TextBlock Text="Daily Study Activity"
+                       FontSize="20"
+                       FontWeight="Bold"
+                       Margin="0,0,0,10"/>
+
+            <Border BorderBrush="LightGray"
+                    BorderThickness="1"
+                    Padding="15">
+
+                <charts:CartesianChart x:Name="DailyChart"
+                                       Height="300"/>
+
+            </Border>
+
+        </StackPanel>
+    </ScrollViewer>
 </Page>
