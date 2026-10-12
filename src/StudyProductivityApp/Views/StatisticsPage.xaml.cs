@@ -64,7 +64,8 @@ namespace StudyProductivityApp.Views
                 new Axis
                 {
                     Name = "Minutes",
-                    MinLimit = 0
+                    MinLimit = 0,
+                    MinStep = 1
                 }
             };
         }
@@ -80,9 +81,12 @@ namespace StudyProductivityApp.Views
             DateTime firstDate = data.Keys.Min();
             DateTime lastDate = data.Keys.Max();
 
-            var dates = Enumerable.Range(0, (lastDate - firstDate).Days + 1)
-                .Select(day => firstDate.AddDays(day))
-                .ToList();
+            List<DateTime> dates = new();
+
+            for (DateTime date = firstDate; date <= lastDate; date = date.AddDays(1))
+            {
+                dates.Add(date);
+            }
 
             DailyChart.Series = new ISeries[]
             {
@@ -108,7 +112,8 @@ namespace StudyProductivityApp.Views
                 new Axis
                 {
                     Name = "Minutes",
-                    MinLimit = 0
+                    MinLimit = 0,
+                    MinStep = 1
                 }
             };
         }
