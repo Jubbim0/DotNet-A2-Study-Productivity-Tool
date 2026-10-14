@@ -7,6 +7,17 @@ namespace StudyProductivityApp.Services
 {
     public class CategoryService
     {
+        private readonly Func<AppDbContext> createContext;
+
+        public CategoryService() : this(() => new AppDbContext())
+        {
+        }
+
+        public CategoryService(Func<AppDbContext> createContext)
+        {
+            this.createContext = createContext;
+        }
+
         private static void ValidateCategory(Category category)
         {
             if (string.IsNullOrWhiteSpace(category.Name))
@@ -20,7 +31,7 @@ namespace StudyProductivityApp.Services
         // Create a new category. Throws ArgumentException if the category is invalid.
         public void AddCategory(Category category)
         {
-            using AppDbContext db = new();
+            using AppDbContext db = createContext();
 
             ValidateCategory(category);
 
@@ -32,7 +43,7 @@ namespace StudyProductivityApp.Services
         // Update an existing category. Throws ArgumentException if the category is invalid.
         public void UpdateCategory(Category category)
         {
-            using AppDbContext db = new();
+            using AppDbContext db = createContext();
             ValidateCategory(category);
 
             Category? existingCategory = db.Categories.Find(category.Id);
@@ -49,7 +60,7 @@ namespace StudyProductivityApp.Services
         // delete a category. If the category has tasks, they will be uncategorized (CategoryId set to null).
         public void DeleteCategory(int categoryId)
         {
-            using AppDbContext db = new();
+            using AppDbContext db = createContext();
 
             Category? category = db.Categories.Find(categoryId);
 
@@ -70,7 +81,7 @@ namespace StudyProductivityApp.Services
         // Check if a category exists by its name, excluding a specific category ID (useful for updates).
         public bool CategoryExists(string name, int? excludeCategoryId = null)
         {
-            using AppDbContext db = new();
+            using AppDbContext db = createContext();
 
             string normalizedName = name.Trim();
 
@@ -80,7 +91,7 @@ namespace StudyProductivityApp.Services
 
         public List<Category> GetCategories()
         {
-            using AppDbContext db = new();
+            using AppDbContext db = createContext();
 
             return db.Categories
                 .AsNoTracking()
@@ -90,7 +101,7 @@ namespace StudyProductivityApp.Services
 
         public List<StudyTask> GetTasksForCategory(int categoryId)
         {
-            using AppDbContext db = new();
+            using AppDbContext db = createContext();
 
             return db.Tasks
                 .AsNoTracking()
@@ -101,7 +112,7 @@ namespace StudyProductivityApp.Services
 
         public List<StudyTask> GetUncategorizedTasks()
         {
-            using AppDbContext db = new();
+            using AppDbContext db = createContext();
 
             return db.Tasks
                 .AsNoTracking()
@@ -112,7 +123,7 @@ namespace StudyProductivityApp.Services
 
         public void AssignTaskToCategory(int taskId, int categoryId)
         {
-            using AppDbContext db = new();
+            using AppDbContext db = createContext();
 
             StudyTask? task = db.Tasks.Find(taskId);
             bool categoryExists = db.Categories.Any(category => category.Id == categoryId);
@@ -130,7 +141,7 @@ namespace StudyProductivityApp.Services
 
         public void RemoveTaskFromCategory(int taskId, int categoryId)
         {
-            using AppDbContext db = new();
+            using AppDbContext db = createContext();
 
             StudyTask? task = db.Tasks.Find(taskId);
 
