@@ -1,15 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace StudyProductivityApp.Views
 {
@@ -21,6 +11,34 @@ namespace StudyProductivityApp.Views
         public CategoriesPage()
         {
             InitializeComponent();
+        }
+
+        private void AddCategory_Click(object sender, RoutedEventArgs e)
+        {
+        }
+
+        private void UpdateCategory_Click(object sender, RoutedEventArgs e)
+        {
+        }
+
+        private void DeleteCategory_Click(object sender, RoutedEventArgs e)
+        {
+        }
+
+        private void Clear_Click(object sender, RoutedEventArgs e)
+        {
+        }
+
+        private void CategoriesGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+        }
+
+        private void AddTaskToCategory_Click(object sender, RoutedEventArgs e)
+        {
+        }
+
+        private void RemoveTaskFromCategory_Click(object sender, RoutedEventArgs e)
+        {
         }
     }
 }
