@@ -5,10 +5,21 @@ namespace StudyProductivityApp.Services
 {
     public class StatisticsService
     {
+        private readonly Func<AppDbContext> createContext;
+
+        public StatisticsService() : this(() => new AppDbContext())
+        {
+        }
+
+        public StatisticsService(Func<AppDbContext> createContext)
+        {
+            this.createContext = createContext ?? throw new ArgumentNullException(nameof(createContext));
+        }
+
         // Total minutes spent studying
         public int GetTotalStudyMinutes()
         {
-            using AppDbContext db = new();
+            using AppDbContext db = createContext();
 
             return db.StudySessions.Sum(session => session.DurationMinutes);
         }
@@ -16,7 +27,7 @@ namespace StudyProductivityApp.Services
         // Number of completed study sessions
         public int GetCompletedSessions()
         {
-            using AppDbContext db = new();
+            using AppDbContext db = createContext();
 
             return db.StudySessions.Count();
         }
@@ -24,7 +35,7 @@ namespace StudyProductivityApp.Services
         // Average study session duration
         public double GetAverageSessionMinutes()
         {
-            using AppDbContext db = new();
+            using AppDbContext db = createContext();
 
             return db.StudySessions
                 .Select(session => (double?)session.DurationMinutes)
@@ -34,7 +45,7 @@ namespace StudyProductivityApp.Services
         // Percentage of completed tasks
         public double GetTaskCompletionRate()
         {
-            using AppDbContext db = new();
+            using AppDbContext db = createContext();
 
             int totalTasks = db.Tasks.Count();
 
@@ -49,7 +60,7 @@ namespace StudyProductivityApp.Services
         // Total study minutes grouped by category
         public Dictionary<string, int> GetStudyTimeByCategory()
         {
-            using AppDbContext db = new();
+            using AppDbContext db = createContext();
 
             return db.StudySessions
                 .Select(session => new
@@ -69,7 +80,7 @@ namespace StudyProductivityApp.Services
         // Total study minutes grouped by date
         public Dictionary<DateTime, int> GetDailyStudyTime()
         {
-            using AppDbContext db = new();
+            using AppDbContext db = createContext();
 
             return db.StudySessions
                 .ToList()

@@ -12,8 +12,22 @@ namespace StudyProductivityApp.Data
 
         public DbSet<StudySession> StudySessions { get; set; }
 
+        public AppDbContext()
+        {
+
+        }
+
+        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
+        {
+        }
+
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
+            if (options.IsConfigured)
+            {
+                return;
+            }
+
             string folder = Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
                 "StudyProductivityApp"
