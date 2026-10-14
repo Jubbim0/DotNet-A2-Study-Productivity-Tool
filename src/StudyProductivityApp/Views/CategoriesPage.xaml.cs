@@ -22,7 +22,9 @@ namespace StudyProductivityApp.Views
         private void RefreshCategories(int? selectedCategoryId = null)
         {
             isRefreshing = true;
+
             List<Category> categories = categoryService.GetCategories();
+
             CategoriesGrid.ItemsSource = categories;
             CategoriesGrid.SelectedItem = categories.FirstOrDefault(category =>
                 category.Id == selectedCategoryId);
