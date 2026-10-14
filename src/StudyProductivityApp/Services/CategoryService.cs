@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using StudyProductivityApp.Data;
 using StudyProductivityApp.Models;
+using System.Text.RegularExpressions;
 
 namespace StudyProductivityApp.Services
 {
@@ -10,7 +11,8 @@ namespace StudyProductivityApp.Services
         {
             if (string.IsNullOrWhiteSpace(category.Name))
                 throw new ArgumentException("Category name cannot be empty.");
-            if (category.Colour == null || !category.Colour.StartsWith("#") || category.Colour.Length != 7)
+            category.Name = category.Name.Trim();
+            if (string.IsNullOrEmpty(category.Colour) || !Regex.IsMatch(category.Colour, "^#[0-9A-Fa-f]{6}$"))
                 throw new ArgumentException("Invalid colour format. Use hex format like #RRGGBB.");
             if (category.Name.Length > 100)
                 throw new ArgumentException("Category name cannot exceed 100 characters.");
@@ -38,10 +40,8 @@ namespace StudyProductivityApp.Services
             if (existingCategory == null)
                 return;
 
-            existingCategory.Name = category.Name;
+            existingCategory.Name = category.Name.Trim();
             existingCategory.Colour = category.Colour;
-            existingCategory.Tasks = category.Tasks;
-
 
             db.SaveChanges();
         }
@@ -53,14 +53,14 @@ namespace StudyProductivityApp.Services
 
             Category? category = db.Categories.Find(categoryId);
 
-            foreach(var task in db.Tasks.Where(t => t.CategoryId == categoryId))
+            if (category == null)
+                return;
+
+            foreach (var task in db.Tasks.Where(task => task.CategoryId == categoryId))
             {
                 task.CategoryId = null;
                 task.Category = null;
             }
-
-            if (category == null)
-                return;
 
             db.Categories.Remove(category);
 
@@ -72,7 +72,73 @@ namespace StudyProductivityApp.Services
         {
             using AppDbContext db = new();
 
-            return db.Categories.Any(c => c.Name == name && (!excludeCategoryId.HasValue || c.Id != excludeCategoryId.Value));
+            string normalizedName = name.Trim();
+
+            return db.Categories.Any(category => category.Name == normalizedName &&
+                (!excludeCategoryId.HasValue || category.Id != excludeCategoryId.Value));
+        }
+
+        public List<Category> GetCategories()
+        {
+            using AppDbContext db = new();
+
+            return db.Categories
+                .AsNoTracking()
+                .OrderBy(category => category.Name)
+                .ToList();
+        }
+
+        public List<StudyTask> GetTasksForCategory(int categoryId)
+        {
+            using AppDbContext db = new();
+
+            return db.Tasks
+                .AsNoTracking()
+                .Where(task => task.CategoryId == categoryId)
+                .OrderBy(task => task.Title)
+                .ToList();
+        }
+
+        public List<StudyTask> GetUncategorizedTasks()
+        {
+            using AppDbContext db = new();
+
+            return db.Tasks
+                .AsNoTracking()
+                .Where(task => task.CategoryId == null)
+                .OrderBy(task => task.Title)
+                .ToList();
+        }
+
+        public void AssignTaskToCategory(int taskId, int categoryId)
+        {
+            using AppDbContext db = new();
+
+            StudyTask? task = db.Tasks.Find(taskId);
+            bool categoryExists = db.Categories.Any(category => category.Id == categoryId);
+
+            if (task == null)
+                throw new ArgumentException("The selected task no longer exists.");
+            if (!categoryExists)
+                throw new ArgumentException("The selected category no longer exists.");
+            if (task.CategoryId.HasValue)
+                throw new ArgumentException("The selected task is already assigned to a category.");
+
+            task.CategoryId = categoryId;
+            db.SaveChanges();
+        }
+
+        public void RemoveTaskFromCategory(int taskId, int categoryId)
+        {
+            using AppDbContext db = new();
+
+            StudyTask? task = db.Tasks.Find(taskId);
+
+            if (task == null || task.CategoryId != categoryId)
+                throw new ArgumentException("The selected task is no longer in this category.");
+
+            task.CategoryId = null;
+            db.SaveChanges();
         }
     }
 }
