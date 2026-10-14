@@ -6,10 +6,21 @@ namespace StudyProductivityApp.Services
 {
     public class TaskService
     {
+        private readonly Func<AppDbContext> createContext;
+
+        public TaskService() : this(() => new AppDbContext())
+        {
+        }
+
+        public TaskService(Func<AppDbContext> createContext)
+        {
+            this.createContext = createContext ?? throw new ArgumentNullException(nameof(createContext));
+        }
+
         // Create a task
         public void AddTask(StudyTask task)
         {
-            using AppDbContext db = new();
+            using AppDbContext db = createContext();
 
             db.Tasks.Add(task);
             db.SaveChanges();
@@ -18,7 +29,7 @@ namespace StudyProductivityApp.Services
         // Update an existing task
         public void UpdateTask(StudyTask task)
         {
-            using AppDbContext db = new();
+            using AppDbContext db = createContext();
 
             StudyTask? existingTask = db.Tasks.Find(task.Id);
 
@@ -38,7 +49,7 @@ namespace StudyProductivityApp.Services
         // Delete a task
         public void DeleteTask(int taskId)
         {
-            using AppDbContext db = new();
+            using AppDbContext db = createContext();
 
             StudyTask? task = db.Tasks.Find(taskId);
 
@@ -52,7 +63,7 @@ namespace StudyProductivityApp.Services
         // Mark a task as completed
         public void CompleteTask(int taskId)
         {
-            using AppDbContext db = new();
+            using AppDbContext db = createContext();
 
             StudyTask? task = db.Tasks.Find(taskId);
 
@@ -71,7 +82,7 @@ namespace StudyProductivityApp.Services
             Models.TaskStatus? status,
             string sortBy)
         {
-            using AppDbContext db = new();
+            using AppDbContext db = createContext();
 
             IQueryable<StudyTask> query = db.Tasks
                 .Include(task => task.Category)
