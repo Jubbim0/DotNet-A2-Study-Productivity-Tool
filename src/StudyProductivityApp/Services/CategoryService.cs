@@ -53,7 +53,7 @@ namespace StudyProductivityApp.Services
 
             Category? category = db.Categories.Find(categoryId);
 
-            for each(var task in db.Tasks.Where(t => t.CategoryId == categoryId))
+            foreach(var task in db.Tasks.Where(t => t.CategoryId == categoryId))
             {
                 task.CategoryId = null;
                 task.Category = null;
