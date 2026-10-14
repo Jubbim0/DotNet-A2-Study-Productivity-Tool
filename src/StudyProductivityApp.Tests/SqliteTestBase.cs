@@ -33,5 +33,6 @@ namespace StudyProductivityApp.Tests
         {
             connection?.Dispose();
         }
+    }
 }
 
