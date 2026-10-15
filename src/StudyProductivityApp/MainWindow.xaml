@@ -5,7 +5,9 @@
         Height="650"
         Width="950"
         MinHeight="500"
-        MinWidth="750">
+        MinWidth="750"
+        Background="{StaticResource AppBackgroundBrush}"
+        FontFamily="Segoe UI">
 
     <Grid>
         <Grid.ColumnDefinitions>
@@ -15,31 +17,39 @@
 
         <!-- Navigation -->
         <StackPanel Grid.Column="0"
-                    Background="#EEEEEE">
+                    Background="{StaticResource SidebarBrush}"
+                    KeyboardNavigation.TabNavigation="Local">
 
             <TextBlock Text="Study Productivity"
-                       FontSize="18"
+                       FontSize="17"
                        FontWeight="Bold"
-                       Margin="15,15"/>
+                       Foreground="{StaticResource PrimaryTextBrush}"
+                       TextWrapping="Wrap"
+                       Margin="18,22,14,18"/>
 
-            <Button Content="Categories"
-                    Height="40"
+            <Button x:Name="CategoriesNavigationButton"
+                    Content="Categories"
+                    Style="{StaticResource NavigationButtonStyle}"
                     Click="Categories_Click"/>
 
-            <Button Content="Tasks"
-                    Height="40"
+            <Button x:Name="TasksNavigationButton"
+                    Content="Tasks"
+                    Style="{StaticResource NavigationButtonStyle}"
                     Click="Tasks_Click"/>
 
-            <Button Content="Focus Sessions"
-                    Height="40"
+            <Button x:Name="FocusNavigationButton"
+                    Content="Focus Sessions"
+                    Style="{StaticResource NavigationButtonStyle}"
                     Click="Focus_Click"/>
 
-            <Button Content="Calendar"
-                    Height="40"
+            <Button x:Name="CalendarNavigationButton"
+                    Content="Calendar"
+                    Style="{StaticResource NavigationButtonStyle}"
                     Click="Calendar_Click"/>
 
-            <Button Content="Statistics"
-                    Height="40"
+            <Button x:Name="StatisticsNavigationButton"
+                    Content="Statistics"
+                    Style="{StaticResource NavigationButtonStyle}"
                     Click="Statistics_Click"/>
 
         </StackPanel>

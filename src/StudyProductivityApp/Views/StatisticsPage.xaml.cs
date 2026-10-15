@@ -13,26 +13,30 @@ namespace StudyProductivityApp.Views
         {
             InitializeComponent();
 
-            LoadStatistics();
+            NoStudySessionsText.Visibility = LoadStatistics()
+                ? System.Windows.Visibility.Collapsed
+                : System.Windows.Visibility.Visible;
             LoadCategoryChart();
             LoadDailyChart();
         }
 
         // Display numerical statistics
-        private void LoadStatistics()
+        private bool LoadStatistics()
         {
             int totalMinutes = statisticsService.GetTotalStudyMinutes();
+            int completedSessions = statisticsService.GetCompletedSessions();
 
             TotalStudyTimeText.Text = $"{totalMinutes / 60}h {totalMinutes % 60}m";
 
-            CompletedSessionsText.Text =
-                statisticsService.GetCompletedSessions().ToString();
+            CompletedSessionsText.Text = completedSessions.ToString();
 
             AverageDurationText.Text =
                 $"{statisticsService.GetAverageSessionMinutes():F1} min";
 
             TaskCompletionText.Text =
                 $"{statisticsService.GetTaskCompletionRate():F1}%";
+
+            return completedSessions > 0;
         }
 
         // Display study time by category

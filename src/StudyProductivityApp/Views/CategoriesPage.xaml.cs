@@ -1,5 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
+using System.Text.RegularExpressions;
 using StudyProductivityApp.Models;
 using StudyProductivityApp.Services;
 
@@ -30,6 +32,9 @@ namespace StudyProductivityApp.Views
                 category.Id == selectedCategoryId);
             isRefreshing = false;
 
+            CategoriesEmptyText.Visibility = categories.Count == 0
+                ? Visibility.Visible
+                : Visibility.Collapsed;
             RefreshTaskLists();
         }
 
@@ -39,11 +44,51 @@ namespace StudyProductivityApp.Views
             {
                 AssociatedTasksGrid.ItemsSource = categoryService.GetTasksForCategory(selectedCategory.Id);
                 AvailableTasksGrid.ItemsSource = categoryService.GetUncategorizedTasks();
-                return;
+            }
+            else
+            {
+                AssociatedTasksGrid.ItemsSource = null;
+                AvailableTasksGrid.ItemsSource = null;
             }
 
-            AssociatedTasksGrid.ItemsSource = null;
-            AvailableTasksGrid.ItemsSource = null;
+            AssociatedTasksEmptyText.Text = CategoriesGrid.SelectedItem is Category
+                ? "No tasks are assigned to this category."
+                : "Select a category to see its tasks.";
+            AssociatedTasksEmptyText.Visibility = AssociatedTasksGrid.Items.Count == 0
+                ? Visibility.Visible
+                : Visibility.Collapsed;
+            AvailableTasksEmptyText.Text = CategoriesGrid.SelectedItem is Category
+                ? "No unassigned tasks are available."
+                : "Select a category to assign tasks.";
+            AvailableTasksEmptyText.Visibility = AvailableTasksGrid.Items.Count == 0
+                ? Visibility.Visible
+                : Visibility.Collapsed;
+            UpdateActionStates();
+        }
+
+        private void UpdateActionStates()
+        {
+            bool hasCategory = CategoriesGrid.SelectedItem is Category;
+            UpdateCategoryButton.IsEnabled = hasCategory;
+            DeleteCategoryButton.IsEnabled = hasCategory;
+            AddTaskButton.IsEnabled = hasCategory && AvailableTasksGrid.SelectedItem is StudyTask;
+            RemoveTaskButton.IsEnabled = hasCategory && AssociatedTasksGrid.SelectedItem is StudyTask;
+        }
+
+        private void CategoryColourInput_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            string colour = CategoryColourInput.Text.Trim();
+            if (Regex.IsMatch(colour, "^#[0-9A-Fa-f]{6}$"))
+            {
+                CategoryColourPreview.Background = new SolidColorBrush(
+                    (Color)ColorConverter.ConvertFromString(colour));
+                CategoryColourPreview.ToolTip = colour;
+            }
+            else
+            {
+                CategoryColourPreview.Background = new SolidColorBrush(Color.FromRgb(128, 128, 128));
+                CategoryColourPreview.ToolTip = "Enter a valid colour in #RRGGBB format.";
+            }
         }
 
         private void AddCategory_Click(object sender, RoutedEventArgs e)
@@ -176,6 +221,11 @@ namespace StudyProductivityApp.Views
             AssociatedTasksGrid.ItemsSource = null;
             AvailableTasksGrid.ItemsSource = null;
             isRefreshing = false;
+            UpdateActionStates();
+            AssociatedTasksEmptyText.Text = "Select a category to see its tasks.";
+            AssociatedTasksEmptyText.Visibility = Visibility.Visible;
+            AvailableTasksEmptyText.Text = "Select a category to assign tasks.";
+            AvailableTasksEmptyText.Visibility = Visibility.Visible;
         }
 
         private static void ShowError(string message)
@@ -195,6 +245,11 @@ namespace StudyProductivityApp.Views
             }
 
             RefreshTaskLists();
+        }
+
+        private void TaskGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            UpdateActionStates();
         }
 
         private void AddTaskToCategory_Click(object sender, RoutedEventArgs e)
