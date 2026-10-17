@@ -1,10 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using StudyProductivityApp.Data;
 using StudyProductivityApp.Models;
+using StudyProductivityApp.Interfaces;
 
 namespace StudyProductivityApp.Services
 {
-    public class TaskService
+    public class TaskService : ITaskService
     {
         private readonly Func<AppDbContext> createContext;
 

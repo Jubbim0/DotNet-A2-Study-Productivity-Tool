@@ -1,9 +1,10 @@
 ﻿using StudyProductivityApp.Data;
 using StudyProductivityApp.Models;
+using StudyProductivityApp.Interfaces;
 
 namespace StudyProductivityApp.Services
 {
-    public class StatisticsService
+    public class StatisticsService : IStatisticsService 
     {
         private readonly Func<AppDbContext> createContext;
 

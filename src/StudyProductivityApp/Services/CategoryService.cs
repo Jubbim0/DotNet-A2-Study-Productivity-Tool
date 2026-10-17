@@ -2,10 +2,11 @@ using Microsoft.EntityFrameworkCore;
 using StudyProductivityApp.Data;
 using StudyProductivityApp.Models;
 using System.Text.RegularExpressions;
+using StudyProductivityApp.Interfaces;
 
 namespace StudyProductivityApp.Services
 {
-    public class CategoryService
+    public class CategoryService : ICategoryService
     {
         private readonly Func<AppDbContext> createContext;
 
@@ -110,7 +111,7 @@ namespace StudyProductivityApp.Services
                 .ToList();
         }
 
-        public List<StudyTask> GetUncategorizedTasks()
+        public List<StudyTask> GetUncategorisedTasks()
         {
             using AppDbContext db = createContext();
 
