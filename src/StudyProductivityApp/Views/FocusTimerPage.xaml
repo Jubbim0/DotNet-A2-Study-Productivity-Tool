@@ -46,6 +46,31 @@
                       SelectedValuePath="Id"
                       Margin="0,5,0,15"/>
 
+            <TextBlock Text="Select application to block (optional)"
+                       HorizontalAlignment="Center"/>
+
+            <ComboBox x:Name="BlockedAppInput"
+                Width="220"
+                Margin="0,5,0,15"/>
+
+
+            <Button x:Name="AddBlockedAppButton"
+                Content="Add Application"
+                Width="120"
+                Margin="0,0,0,10"
+                Click="AddBlockedApp_Click"/>
+
+            <ListBox x:Name="BlockedAppsList"
+                Width="220"
+                Height="70"
+                Margin="0,0,0,5"/>
+
+            <Button x:Name="RemoveBlockedAppButton"
+                Content="Remove Selected Application"
+                Width="120"
+                Margin="0,0,0,15"
+                Click="RemoveBlockedApp_Click"/>
+
             <WrapPanel HorizontalAlignment="Center"
                        Margin="0,0,0,20">
 
