@@ -44,6 +44,9 @@ namespace StudyProductivityApp.Views
                 .ToList();
 
             TasksDataGrid.ItemsSource = tasks;
+            CalendarTasksEmptyText.Visibility = tasks.Count == 0
+                ? System.Windows.Visibility.Visible
+                : System.Windows.Visibility.Collapsed;
         }
     }
 }

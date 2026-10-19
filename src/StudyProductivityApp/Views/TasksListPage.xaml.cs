@@ -81,8 +81,21 @@ namespace StudyProductivityApp.Views
 
             string sortBy = SortInput.SelectedItem?.ToString() ?? "Deadline";
 
-            TasksGrid.ItemsSource = taskService.GetFilteredTasks(
+            List<StudyTask> tasks = taskService.GetFilteredTasks(
                 categoryId, priority, status, sortBy);
+            TasksGrid.ItemsSource = tasks;
+            TasksEmptyText.Visibility = tasks.Count == 0
+                ? Visibility.Visible
+                : Visibility.Collapsed;
+            UpdateActionStates();
+        }
+
+        private void UpdateActionStates()
+        {
+            bool hasSelection = TasksGrid.SelectedItem is StudyTask;
+            UpdateTaskButton.IsEnabled = hasSelection;
+            DeleteTaskButton.IsEnabled = hasSelection;
+            CompleteTaskButton.IsEnabled = hasSelection;
         }
 
         // Read task details from the form
@@ -180,7 +193,11 @@ namespace StudyProductivityApp.Views
         private void TasksGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (TasksGrid.SelectedItem is not StudyTask task)
+            {
+                EditingTaskText.Visibility = Visibility.Collapsed;
+                UpdateActionStates();
                 return;
+            }
 
             TitleInput.Text = task.Title;
             DescriptionInput.Text = task.Description;
@@ -188,6 +205,9 @@ namespace StudyProductivityApp.Views
             PriorityInput.SelectedItem = task.Priority;
             StatusInput.SelectedItem = task.Status;
             CategoryInput.SelectedValue = task.CategoryId;
+            EditingTaskText.Text = $"Editing existing task: {task.Title}";
+            EditingTaskText.Visibility = Visibility.Visible;
+            UpdateActionStates();
         }
 
         // Refresh list when filtering changes
@@ -218,6 +238,8 @@ namespace StudyProductivityApp.Views
 
             PriorityInput.SelectedItem = TaskPriority.Medium;
             StatusInput.SelectedItem = Models.TaskStatus.NotStarted;
+            EditingTaskText.Visibility = Visibility.Collapsed;
+            UpdateActionStates();
         }
     }
 }
