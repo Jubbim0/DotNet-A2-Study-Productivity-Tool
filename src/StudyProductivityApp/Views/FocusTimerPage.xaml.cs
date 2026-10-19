@@ -4,7 +4,6 @@ using System.Windows.Threading;
 using StudyProductivityApp.Data;
 using StudyProductivityApp.Models;
 using StudyProductivityApp.Services;
-using System.Diagnostics;
 
 namespace StudyProductivityApp.Views
 {
@@ -12,6 +11,7 @@ namespace StudyProductivityApp.Views
     {
         private readonly StudySessionService sessionService = new();
         private readonly DispatcherTimer timer = new();
+        private readonly DispatcherTimer appListRefreshTimer = new() { Interval = TimeSpan.FromSeconds(2) };
         private readonly AppBlockerService appBlocker = new();
 
         private readonly List<string> blockedApps = new();
@@ -26,6 +26,8 @@ namespace StudyProductivityApp.Views
             InitializeComponent();
 
             Unloaded += FocusPage_Unloaded;
+            Loaded += FocusPage_Loaded;
+            appListRefreshTimer.Tick += (_, _) => LoadRunningApps();
 
             timer.Interval = TimeSpan.FromSeconds(1);
             timer.Tick += Timer_Tick;
@@ -33,14 +35,22 @@ namespace StudyProductivityApp.Views
             LoadCategories();
             LoadHistory();
             LoadRunningApps();
+            BlockedAppInput.DropDownOpened += (_, _) => LoadRunningApps();
             UpdateDisplay();
 
 
             PauseButton.IsEnabled = false;
         }
 
+        private void FocusPage_Loaded(object sender, RoutedEventArgs e)
+        {
+            LoadRunningApps();
+            appListRefreshTimer.Start();
+        }
+
         private void FocusPage_Unloaded(object sender, RoutedEventArgs e)
         {
+            appListRefreshTimer.Stop();
             ResetTimer();
         }
 
@@ -56,24 +66,14 @@ namespace StudyProductivityApp.Views
 
         private void LoadRunningApps()
         {
-            var runningApps = Process.GetProcesses()
-                .Where(process =>
-                {
-                    try
-                    {
-                        return !string.IsNullOrWhiteSpace(process.MainWindowTitle);
-                    }
-                    catch
-                    {
-                        return false;
-                    }
-                })
-                .Select(process => process.ProcessName)
-                .Distinct()
-                .OrderBy(name => name)
-                .ToList();
+            string? selected = BlockedAppInput.SelectedItem as string;
+            var available = AppBlockerService.GetSelectableApps();
+            if (BlockedAppInput.ItemsSource is IEnumerable<string> old && old.SequenceEqual(available))
+                return;
 
-            BlockedAppInput.ItemsSource = runningApps;
+            BlockedAppInput.ItemsSource = available;
+            if (selected != null && available.Contains(selected, StringComparer.OrdinalIgnoreCase))
+                BlockedAppInput.SelectedItem = available.First(x => string.Equals(x, selected, StringComparison.OrdinalIgnoreCase));
         }
 
         // Load completed sessions
@@ -87,7 +87,14 @@ namespace StudyProductivityApp.Views
             if (BlockedAppInput.SelectedItem is not string selectedApp)
                 return;
 
-            if (blockedApps.Contains(selectedApp))
+            if (!AppBlockerService.GetSelectableApps().Contains(selectedApp, StringComparer.OrdinalIgnoreCase))
+            {
+                MessageBox.Show("That application is not an allowed blocking target.");
+                LoadRunningApps();
+                return;
+            }
+
+            if (blockedApps.Contains(selectedApp, StringComparer.OrdinalIgnoreCase))
                 return;
 
             blockedApps.Add(selectedApp);
@@ -128,10 +135,10 @@ namespace StudyProductivityApp.Views
                 UpdateDisplay();
             }
 
+            // Start monitoring only after all targets have been selected.
+            // Existing processes are preserved by AppBlockerService.
             foreach (string app in blockedApps)
-            {
                 appBlocker.StartBlocking(app);
-            }
 
 
             timer.Start();
@@ -143,9 +150,10 @@ namespace StudyProductivityApp.Views
             CategoryInput.IsEnabled = false;
             BlockedAppInput.IsEnabled = false;
             RemoveBlockedAppButton.IsEnabled = false;
+            AddBlockedAppButton.IsEnabled = false;
         }
 
-   
+
         // Pause timer
         private void Pause_Click(object sender, RoutedEventArgs e)
         {
@@ -156,8 +164,6 @@ namespace StudyProductivityApp.Views
             StartButton.IsEnabled = true;
             PauseButton.IsEnabled = false;
             BlockedAppInput.IsEnabled = true;
-            AddBlockedAppButton.IsEnabled = true;
-            RemoveBlockedAppButton.IsEnabled = true;
             AddBlockedAppButton.IsEnabled = true;
             RemoveBlockedAppButton.IsEnabled = true;
         }
@@ -207,6 +213,8 @@ namespace StudyProductivityApp.Views
             StartButton.IsEnabled = true;
             PauseButton.IsEnabled = false;
             BlockedAppInput.IsEnabled = true;
+            AddBlockedAppButton.IsEnabled = true;
+            RemoveBlockedAppButton.IsEnabled = true;
 
             UpdateDisplay();
         }
