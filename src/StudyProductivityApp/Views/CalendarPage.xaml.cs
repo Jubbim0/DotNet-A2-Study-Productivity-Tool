@@ -10,6 +10,7 @@ namespace StudyProductivityApp.Views
         {
             InitializeComponent();
 
+            // Default to today's date when the calendar opens.
             StudyCalendar.SelectedDate = DateTime.Today;
 
             LoadTasksForDate(DateTime.Today);
@@ -22,6 +23,7 @@ namespace StudyProductivityApp.Views
             if (TasksDataGrid == null || SelectedDateText == null)
                 return;
 
+            // Refresh the task list when a different date is selected.
             if (StudyCalendar.SelectedDate is DateTime selectedDate)
             {
                 LoadTasksForDate(selectedDate);
@@ -36,6 +38,7 @@ namespace StudyProductivityApp.Views
 
             DateTime nextDate = date.Date.AddDays(1);
 
+            // Retrieve tasks due on the selected date, regardless of time.
             var tasks = db.Tasks
                 .AsNoTracking()
                 .Where(t => t.DueDate >= date.Date &&
@@ -43,6 +46,7 @@ namespace StudyProductivityApp.Views
                 .OrderBy(t => t.Title)
                 .ToList();
 
+            // Show an empty-state message when no tasks are found.
             TasksDataGrid.ItemsSource = tasks;
             CalendarTasksEmptyText.Visibility = tasks.Count == 0
                 ? System.Windows.Visibility.Visible

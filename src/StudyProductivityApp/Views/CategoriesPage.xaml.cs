@@ -21,6 +21,7 @@ namespace StudyProductivityApp.Views
             RefreshCategories();
         }
 
+        // Reload categories and preserve the selected category when possible.
         private void RefreshCategories(int? selectedCategoryId = null)
         {
             isRefreshing = true;
@@ -38,6 +39,7 @@ namespace StudyProductivityApp.Views
             RefreshTaskLists();
         }
 
+        // Display tasks assigned to the selected category and those available for assignment.
         private void RefreshTaskLists()
         {
             if (CategoriesGrid.SelectedItem is Category selectedCategory)
@@ -67,6 +69,7 @@ namespace StudyProductivityApp.Views
             UpdateActionStates();
         }
 
+        // Enable or disable actions based on the current selections.
         private void UpdateActionStates()
         {
             bool hasCategory = CategoriesGrid.SelectedItem is Category;
@@ -76,6 +79,7 @@ namespace StudyProductivityApp.Views
             RemoveTaskButton.IsEnabled = hasCategory && AssociatedTasksGrid.SelectedItem is StudyTask;
         }
 
+        // Validate the hexadecimal colour and update its preview.
         private void CategoryColourInput_TextChanged(object sender, TextChangedEventArgs e)
         {
             string colour = CategoryColourInput.Text.Trim();
@@ -92,6 +96,7 @@ namespace StudyProductivityApp.Views
             }
         }
 
+        // Validate and create a new category.
         private void AddCategory_Click(object sender, RoutedEventArgs e)
         {
             if (!TryGetCategoryInput(out Category category))
@@ -119,6 +124,7 @@ namespace StudyProductivityApp.Views
             }
         }
 
+        // Update the selected category after validating its details.
         private void UpdateCategory_Click(object sender, RoutedEventArgs e)
         {
             if (CategoriesGrid.SelectedItem is not Category selectedCategory)
@@ -155,6 +161,7 @@ namespace StudyProductivityApp.Views
             }
         }
 
+        // Confirm deletion before removing the selected category.
         private void DeleteCategory_Click(object sender, RoutedEventArgs e)
         {
             if (CategoriesGrid.SelectedItem is not Category selectedCategory)
@@ -190,6 +197,7 @@ namespace StudyProductivityApp.Views
             ClearForm();
         }
 
+        // Validate category input before creating or updating a category.
         private bool TryGetCategoryInput(out Category category)
         {
             string name = CategoryNameInput.Text.Trim();
@@ -253,6 +261,7 @@ namespace StudyProductivityApp.Views
             UpdateActionStates();
         }
 
+        // Assign the selected unassigned task to the chosen category.
         private void AddTaskToCategory_Click(object sender, RoutedEventArgs e)
         {
             if (CategoriesGrid.SelectedItem is not Category selectedCategory)
@@ -280,6 +289,7 @@ namespace StudyProductivityApp.Views
             }
         }
 
+        // Remove the selected task's association with the category.
         private void RemoveTaskFromCategory_Click(object sender, RoutedEventArgs e)
         {
             if (CategoriesGrid.SelectedItem is not Category selectedCategory)

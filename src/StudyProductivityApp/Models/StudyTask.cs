@@ -28,6 +28,7 @@
 
         public TaskStatus Status { get; set; } = TaskStatus.NotStarted;
 
+        // Optional relationship between a task and its category.
         public int? CategoryId { get; set; }
 
         public Category? Category { get; set; }
