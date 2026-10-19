@@ -1,10 +1,6 @@
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
 using System.Windows.Threading;
 using StudyProductivityApp.Interfaces;
 
@@ -17,6 +13,9 @@ namespace StudyProductivityApp.Services
         private readonly HashSet<(int Id, long StartTicks)> existingProcesses = new();
         private readonly HashSet<int> existingProcessIds = new();
 
+        // A hardcoded list of Windows App names that we do NOT want the user blocking.
+        // This list encapsulates the most usual ones, however, not all do to the
+        // dynamic nature of Windows' App names.
         private static readonly HashSet<string> ExcludedNames = new(StringComparer.OrdinalIgnoreCase)
         {
             "explorer", "applicationframehost", "shellexperiencehost", "startmenuexperiencehost",
@@ -25,15 +24,17 @@ namespace StudyProductivityApp.Services
             "runtimebroker", "taskhostw", "taskmgr", "system", "registry",
             "fontdrvhost", "audiodg", "ctfmon", "conhost", "dllhost",
             "securityhealthservice", "securityhealthsystray", "msmpeng", "swusb",
-            "calculatorapp" // Packaged Calculator often retains background/host windows.
+            "calculatorapp"
         };
 
-        // Notepad is a user application even when its executable lives under Windows.
+        // This method is used to allow certain Windows apps to allow them to GET blocked by the user
         private static readonly HashSet<string> AllowedWindowsApps = new(StringComparer.OrdinalIgnoreCase)
         {
             "notepad"
         };
 
+        // This section import Windows APIs to identify visible application windows. Allows for easier
+        // identification of apps within Windows.
         [DllImport("user32.dll")]
         private static extern bool EnumWindows(EnumWindowsProc callback, IntPtr parameter);
         private delegate bool EnumWindowsProc(IntPtr window, IntPtr parameter);
@@ -58,6 +59,8 @@ namespace StudyProductivityApp.Services
             blockerTimer.Tick += (_, _) => BlockNewProcesses();
         }
 
+        // Check whether a process is safe to offer as a blocking target. Useful to make sure
+        // the user does not brick their own computer by accident.
         public static bool IsAllowedTarget(Process process)
         {
             try
@@ -84,6 +87,7 @@ namespace StudyProductivityApp.Services
             }
         }
 
+        // Identify processes with visible, non-cloaked top-level windows.
         private static HashSet<int> GetVisibleAppProcessIds()
         {
             var ids = new HashSet<int>();
@@ -115,12 +119,13 @@ namespace StudyProductivityApp.Services
                         if (visibleIds.Contains(process.Id) && IsAllowedTarget(process))
                             names.Add(process.ProcessName);
                     }
-                    catch { /* Ignore inaccessible/exited processes. */ }
+                    catch {}
                 }
             }
             return names.OrderBy(name => name, StringComparer.OrdinalIgnoreCase).ToList();
         }
 
+        // Record existing processes so only newly launched instances are blocked.
         public void StartBlocking(string processName)
         {
             if (string.IsNullOrWhiteSpace(processName)) return;
@@ -138,7 +143,7 @@ namespace StudyProductivityApp.Services
                 {
                     existingProcessIds.Add(process.Id);
                     try { existingProcesses.Add((process.Id, process.StartTime.Ticks)); }
-                    catch { /* Inaccessible processes are not trusted as new. */ }
+                    catch {}
                 }
             }
             blockerTimer.Start();
@@ -152,6 +157,7 @@ namespace StudyProductivityApp.Services
             existingProcessIds.Clear();
         }
 
+        // Terminate newly launched instances of selected applications.
         private void BlockNewProcesses()
         {
             if (blockedNames.Count == 0) return;
@@ -170,7 +176,7 @@ namespace StudyProductivityApp.Services
                                                ex is System.ComponentModel.Win32Exception ||
                                                ex is UnauthorizedAccessException)
                     {
-                        // Do not elevate privileges or interfere with protected processes.
+                        
                     }
                 }
             }

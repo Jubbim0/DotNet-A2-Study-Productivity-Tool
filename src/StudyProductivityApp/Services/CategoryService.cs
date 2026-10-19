@@ -19,6 +19,8 @@ namespace StudyProductivityApp.Services
             this.createContext = createContext;
         }
 
+        // Validation method to make sure all necessary fields have been filled with the allowed
+        // configs.
         private static void ValidateCategory(Category category)
         {
             if (string.IsNullOrWhiteSpace(category.Name))

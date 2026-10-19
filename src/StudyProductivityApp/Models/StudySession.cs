@@ -8,6 +8,7 @@
 
         public int DurationMinutes { get; set; }
 
+        // Optional category relationship for organising study sessions.
         public int? CategoryId { get; set; }
 
         public Category? Category { get; set; }
