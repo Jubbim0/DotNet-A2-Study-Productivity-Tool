@@ -1,10 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using StudyProductivityApp.Data;
 using StudyProductivityApp.Models;
+using StudyProductivityApp.Interfaces;
 
 namespace StudyProductivityApp.Services
 {
-    public class StudySessionService
+    public class StudySessionService : IStudySessionService
     {
         private readonly Func<AppDbContext> createContext;
 
