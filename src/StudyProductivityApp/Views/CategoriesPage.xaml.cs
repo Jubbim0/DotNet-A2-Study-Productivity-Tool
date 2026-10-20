@@ -46,6 +46,7 @@ namespace StudyProductivityApp.Views
             {
                 AssociatedTasksGrid.ItemsSource = categoryService.GetTasksForCategory(selectedCategory.Id);
                 AvailableTasksGrid.ItemsSource = categoryService.GetUncategorisedTasks();
+                return;
             }
             else
             {

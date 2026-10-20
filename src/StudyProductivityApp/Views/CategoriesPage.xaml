@@ -20,4 +20,5 @@
         <Border Style="{StaticResource CardBorderStyle}" Margin="0,0,0,12"><StackPanel><TextBlock Text="Unassigned tasks" Style="{StaticResource SectionHeadingStyle}" Margin="0,0,0,10"/><Grid Height="110"><DataGrid x:Name="AvailableTasksGrid" AutoGenerateColumns="False" IsReadOnly="True" SelectionMode="Single" SelectionChanged="TaskGrid_SelectionChanged" Style="{StaticResource DataGridStyle}" ColumnHeaderStyle="{StaticResource DataGridHeaderStyle}" RowStyle="{StaticResource DataGridRowStyle}"><DataGrid.Columns><DataGridTextColumn Header="Task" Binding="{Binding Title}" Width="*"/></DataGrid.Columns></DataGrid><TextBlock x:Name="AvailableTasksEmptyText" Text="No unassigned tasks are available." Style="{StaticResource SecondaryTextStyle}" TextWrapping="Wrap" HorizontalAlignment="Center" VerticalAlignment="Center" IsHitTestVisible="False"/></Grid><Button x:Name="AddTaskButton" Content="Add selected task to category" Style="{StaticResource SecondaryButtonStyle}" HorizontalAlignment="Left" IsEnabled="False" Click="AddTaskToCategory_Click"/></StackPanel></Border>
       </StackPanel>
     </Grid>
-  </ScrollViewer></Page>
+  </StackPanel></ScrollViewer>
+</Page>
